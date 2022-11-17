@@ -34,6 +34,7 @@
         {
             get
             {
+                //TODO coding style ???? naming convention
                 float TotalWeight = 0;
                 foreach (var equipement in _equipments)
                 {

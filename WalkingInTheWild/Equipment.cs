@@ -10,6 +10,7 @@
         //region public methods
         public Equipment(string description, float weight)
         {
+            //TODO Does it make sens to set the escription if the weight is to small ?
             _description = description;
             if(weight < 0)
             {
