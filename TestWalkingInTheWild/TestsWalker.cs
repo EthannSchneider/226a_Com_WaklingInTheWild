@@ -8,15 +8,18 @@ namespace TestWalkingInTheWild
     public class TestsWalker
     {
         //region private attributes
-        private Walker walker;
-        private string pseudo;
+        private Walker _walker;
+        private string _pseudo;
+        private Bagpack _bagpack = null;
+        private float _maxLoad = 25.50f;
         //endregion private attributes
 
         [SetUp]
         public void Setup()
         {
-            pseudo = "Pseudo";
-            walker = new Walker(pseudo);    
+            _pseudo = "Pseudo";
+            _walker = new Walker(_pseudo);
+            _bagpack = new Bagpack(_maxLoad);
         }
 
         [Test]
@@ -29,99 +32,96 @@ namespace TestWalkingInTheWild
             //constructor is called in Setup() 
 
             //then
-            Assert.AreEqual(pseudo, walker.Pseudo);
-            Assert.IsNull(walker.Bagpack);
+            Assert.AreEqual(_pseudo, _walker.Pseudo);
+            Assert.IsNull(_walker.Bagpack);
         }
 
         [Test]
-        public void TakeBagpack_WalkerReady_BagpackTaken()
+        public void TakeBagpack_WalkerDoesntCarryABagpack_BagpackTaken()
         {
             //given
             //refer to Setup()
-            Bagpack bagpack = new Bagpack(20.00f);
-            Assert.Null(walker.Bagpack);
+            Assert.Null(_walker.Bagpack);
 
             //when
-            this.walker.TakeBagpack(bagpack);
+            _walker.TakeBagpack(_bagpack);
 
             //then
-            Assert.AreEqual(bagpack, walker.Bagpack);
+            Assert.AreEqual(_bagpack, _walker.Bagpack);
         }
 
         [Test]
-        public void TakeBagpack_WalkerNotReady_ThrowException()
+        public void TakeBagpack_WalkerAlreadyCarriesABagpack_ThrowException()
         {
             //given
             //refer to Setup()
-            Bagpack bagpack = new Bagpack(20.00f);
-            walker.TakeBagpack(bagpack);
-            Assert.NotNull(walker.Bagpack);
+            Assert.NotNull(_walker.Bagpack);
 
             //when
             //Event is called by the assertion
 
             //then
-            Assert.Throws<WalkerNotReadyException>(() => walker.TakeBagpack(bagpack));
+            Assert.Throws<WalkerAlreadyCarriesABagpackException>(() => _walker.TakeBagpack(_bagpack));
         }
-        
+
         [Test]        
-        public void DropBagpack_WalkerIsCarringABagpack_WalkerDropsTheBagpack()
+        public void DropBagpack_WalkerIsAlreadyCarringABagpack_WalkerDropsTheBagpack()
         {
             //given
-            Bagpack bagpack = new Bagpack(20.00f);
-            walker.TakeBagpack(bagpack);
+            _walker.TakeBagpack(_bagpack);
+            Assert.NotNull(_walker.Bagpack);
 
             //when
-            Assert.AreEqual(bagpack, walker.Bagpack);
-            walker.DropBagpack();
+            _walker.DropBagpack();
 
             //then
-            Assert.IsNull(walker.Bagpack);
+            Assert.IsNull(_walker.Bagpack);
         }
 
         [Test]
         public void DropBagpack_WalkerIsNotCarringABagpack_ThrowException()
         {
             //given
+            Assert.Null(_walker.Bagpack);
 
             //when
+            //Event is called by the assertion
 
             //then
-            Assert.Throws<EmptyBagpackException>(() => walker.DropBagpack());
+            Assert.Throws<WalkerDoesntCarryABagpackException>(() => _walker.DropBagpack());
         }
 
+        
         [Test]
         public void LoadBagpack_BagpackAvailableLoadSingleCloth_ClothIsLoadedInBagpack()
         {
             //given
-            Bagpack bagpack = new Bagpack(20.00f);
             List<Cloth> cloth = new List<Cloth>{ new Cloth("T-shirt") };
-            walker.TakeBagpack(bagpack);
+            _walker.TakeBagpack(_bagpack);
 
             //when
-            Assert.IsEmpty(walker.Bagpack.Clothes);
-            walker.LoadBagpack(cloth);
+            Assert.IsEmpty(_walker.Bagpack.Clothes);
+            _walker.LoadBagpack(cloth);
 
             //then
-            Assert.IsNotEmpty(walker.Bagpack.Clothes);
-            walker.DropBagpack();
+            Assert.IsNotEmpty(_walker.Bagpack.Clothes);
+            _walker.DropBagpack();
         }
 
         [Test]
         public void LoadBagpack_BagpackAvailableLoadMultipleCloths_ClothsAreLoadedInBagpack()
         {
             //given
-            Bagpack bagpack = new Bagpack(20.00f);
             List<Cloth> cloth = new List<Cloth> { new Cloth("T-shirt"), new Cloth("Pants", true), new Cloth("Shoes"), new Cloth("Hat") };
-            walker.TakeBagpack(bagpack);
+            _walker.TakeBagpack(_bagpack);
 
             //when
-            Assert.IsEmpty(walker.Bagpack.Clothes);
-            walker.LoadBagpack(cloth);
+            Assert.IsEmpty(_walker.Bagpack.Clothes);
+            _walker.LoadBagpack(cloth);
 
             //then
-            Assert.AreEqual(walker.Bagpack.Clothes.Count, cloth.Count);
-            walker.DropBagpack();
+            Assert.AreEqual(_walker.Bagpack.Clothes.Count, cloth.Count);
+            _walker.DropBagpack();
         }
 
         [Test]
@@ -133,41 +133,39 @@ namespace TestWalkingInTheWild
             //when
 
             //then
-            Assert.Throws<EmptyBagpackException>(() => walker.LoadBagpack(cloth));
+            Assert.Throws<EmptyBagpackException>(() => _walker.LoadBagpack(cloth));
         }
 
         [Test]
         public void LoadBagpack_BagpackAvailableLoadSingleEquipment_EquipmentIsLoadedInBagpack()
         {
             //given
-            Bagpack bagpack = new Bagpack(20.00f);
             List<Equipment> equipment = new List<Equipment> { new Equipment("Tent", 1.2f) };
-            walker.TakeBagpack(bagpack);
+            _walker.TakeBagpack(_bagpack);
 
             //when
-            Assert.IsEmpty(walker.Bagpack.Equipments);
-            walker.LoadBagpack(equipment);
+            Assert.IsEmpty(_walker.Bagpack.Equipments);
+            _walker.LoadBagpack(equipment);
 
             //then
-            Assert.IsNotEmpty(walker.Bagpack.Equipments);
-            walker.DropBagpack();
+            Assert.IsNotEmpty(_walker.Bagpack.Equipments);
+            _walker.DropBagpack();
         }
 
         [Test]
         public void LoadBagpack_BagpackAvailableLoadMultipleEquipments_EquipmentAreLoadedInBagpack()
         {
             //given
-            Bagpack bagpack = new Bagpack(20.00f);
             List<Equipment> equipment = new List<Equipment> { new Equipment("Tent", 1.2f), new Equipment("Sleeping bag", 1.5f), new Equipment("Stove", 0.5f), new Equipment("Cooking set", 0.3f) };
-            walker.TakeBagpack(bagpack);
+            _walker.TakeBagpack(_bagpack);
 
             //when
-            Assert.IsEmpty(walker.Bagpack.Equipments);
-            walker.LoadBagpack(equipment);
+            Assert.IsEmpty(_walker.Bagpack.Equipments);
+            _walker.LoadBagpack(equipment);
 
             //then
-            Assert.IsNotEmpty(walker.Bagpack.Equipments);
-            walker.DropBagpack();
+            Assert.IsNotEmpty(_walker.Bagpack.Equipments);
+            _walker.DropBagpack();
         }
 
         [Test]
@@ -179,30 +177,29 @@ namespace TestWalkingInTheWild
             //when
 
             //then
-            Assert.Throws<EmptyBagpackException>(() => walker.LoadBagpack(equipment));
+            Assert.Throws<EmptyBagpackException>(() => _walker.LoadBagpack(equipment));
         }
 
         [Test]
         public void EmptyBagpack_BagpackContainsClothsAndEquipment_BackpackIsEmpty()
         {
             //given
-            Bagpack bagpack = new Bagpack(20.00f);
-            walker.TakeBagpack(bagpack);
+            _walker.TakeBagpack(_bagpack);
             List<Equipment> equipment = new List<Equipment> { new Equipment("Tent", 1.2f), new Equipment("Sleeping bag", 1.5f), new Equipment("Stove", 0.5f), new Equipment("Cooking set", 0.3f) };
             List<Cloth> cloth = new List<Cloth> { new Cloth("T-shirt"), new Cloth("Pants", true), new Cloth("Shoes"), new Cloth("Hat") };
-            Assert.IsEmpty(walker.Bagpack.Clothes);
-            Assert.IsEmpty(walker.Bagpack.Equipments);
+            Assert.IsEmpty(_walker.Bagpack.Clothes);
+            Assert.IsEmpty(_walker.Bagpack.Equipments);
 
             //when
-            walker.LoadBagpack(equipment);
-            walker.LoadBagpack(cloth);
-            Assert.IsNotEmpty(walker.Bagpack.Clothes);
-            Assert.IsNotEmpty(walker.Bagpack.Equipments);
-            walker.EmptyBagpack();
+            _walker.LoadBagpack(equipment);
+            _walker.LoadBagpack(cloth);
+            Assert.IsNotEmpty(_walker.Bagpack.Clothes);
+            Assert.IsNotEmpty(_walker.Bagpack.Equipments);
+            _walker.EmptyBagpack();
 
             //then
-            Assert.IsEmpty(walker.Bagpack.Clothes);
-            Assert.IsEmpty(walker.Bagpack.Equipments);
+            Assert.IsEmpty(_walker.Bagpack.Clothes);
+            Assert.IsEmpty(_walker.Bagpack.Equipments);
         }
 
         [Test]
@@ -213,6 +210,7 @@ namespace TestWalkingInTheWild
             //when
 
             //then
+            Assert.True(false);
         }
     }
 }

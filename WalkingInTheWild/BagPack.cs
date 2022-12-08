@@ -1,4 +1,6 @@
-﻿namespace WalkingInTheWild
+﻿using static WalkingInTheWild.Bagpack;
+
+namespace WalkingInTheWild
 {
     public class Bagpack
     {
@@ -34,12 +36,7 @@
         {
             get
             {
-                float remainingLoadCapacity = _maxLoad;
-                foreach (Equipment equipment in _equipments)
-                {
-                    remainingLoadCapacity -= equipment.Weight;
-                }
-                return remainingLoadCapacity;
+                return _maxLoad - CurrentLoad;
             }
         }
 
@@ -72,6 +69,20 @@
         //endregion public methods
 
         //region private methods
+        private float CurrentLoad
+        {
+            get
+            {
+                {
+                    float currentLoad = 0;
+                    foreach (Equipment equipment in _equipments)
+                    {
+                        currentLoad += equipment.Weight;
+                    }
+                    return currentLoad;
+                }
+            }
+        }
         //endregion private methods
 
         //region nested classes

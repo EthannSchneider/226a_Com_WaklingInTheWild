@@ -4,8 +4,7 @@
     {
         #region private attributes
         private string _pseudo;
-        private Bagpack? _backpack;
-        private int count = 0;
+        private Bagpack? _bagpack;
         #endregion private attributes
 
         #region public methods
@@ -26,50 +25,50 @@
         {
             get
             {
-                return _backpack;
+                return _bagpack;
             }
         }
 
         public void TakeBagpack(Bagpack bagpack)
         {
-            if (_backpack != null)
+            if (_bagpack != null)
             {
-                throw new WalkerNotReadyException();
+                throw new WalkerAlreadyCarriesABagpackException();
             }
-            _backpack = bagpack;
+            _bagpack = bagpack;
         }
 
         public void DropBagpack()
         {
-            if (_backpack == null)
+            if (_bagpack == null)
             {
                 throw new EmptyBagpackException();
             }
-            _backpack = null;
+            _bagpack = null;
         }
 
         public void LoadBagpack(List<Cloth> cloths)
         {
-            if (_backpack == null)
+            if (_bagpack == null)
             {
                 throw new EmptyBagpackException();
             }
-            _backpack?.Add(cloths);
+            _bagpack.Add(cloths);
         }
 
         public void LoadBagpack(List<Equipment> equipments)
         {
-            if (_backpack == null)
+            if (_bagpack == null)
             {
                 throw new EmptyBagpackException();
             }
-            _backpack?.Add(equipments);
+            _bagpack.Add(equipments);
         }
 
         public void EmptyBagpack()
         {
-            _backpack.Clothes.Clear();
-            _backpack.Equipments.Clear();
+            _bagpack.Clothes.Clear();
+            _bagpack.Equipments.Clear();
         }
         #endregion public methods
 
@@ -79,10 +78,9 @@
 
         #region nested classes
         public class WalkerException:Exception{}
-        public class WalkerNotReadyException : WalkerException { }
+        public class WalkerAlreadyCarriesABagpackException : Exception { }
+        public class WalkerDoesntCarryABagpackException : Exception { }
         public class EmptyBagpackException : WalkerException { }
         #endregion nested classes
-
-
     }
 }
