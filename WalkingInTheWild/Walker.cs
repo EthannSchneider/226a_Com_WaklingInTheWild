@@ -32,50 +32,44 @@
 
         public void TakeBagpack(Bagpack bagpack)
         {
-            // i do that because i thing the test TakeBagpack_WalkerNotReady_ThrowException
-            // is wrong but i'm not sure
-            // so i do shit just to prove the test is false :)
-            // also i thing the true code is that 
-            //
-            // if (_backpack != null)
-            // {
-            //     WalkerNotReadyException();
-            // }
-            // _backpack = bagpack;
-            //
-            // good review it will be ;)
-            if (_backpack != null) 
+            if (_backpack != null)
             {
-                count++;
-                if (count > 1)
-                {
-                    throw new WalkerNotReadyException();
-                }
+                throw new WalkerNotReadyException();
             }
-            else
-            {
-                _backpack = bagpack;
-            }
+            _backpack = bagpack;
         }
 
         public void DropBagpack()
         {
+            if (_backpack == null)
+            {
+                throw new EmptyBagpackException();
+            }
             _backpack = null;
         }
 
         public void LoadBagpack(List<Cloth> cloths)
         {
+            if (_backpack == null)
+            {
+                throw new EmptyBagpackException();
+            }
             _backpack?.Add(cloths);
         }
 
         public void LoadBagpack(List<Equipment> equipments)
         {
+            if (_backpack == null)
+            {
+                throw new EmptyBagpackException();
+            }
             _backpack?.Add(equipments);
         }
 
         public void EmptyBagpack()
         {
-            throw new NotImplementedException();
+            _backpack.Clothes.Clear();
+            _backpack.Equipments.Clear();
         }
         #endregion public methods
 
