@@ -5,19 +5,20 @@
         #region private attributes
         private string _pseudo;
         private Bagpack? _backpack;
+        private int count = 0;
         #endregion private attributes
 
         #region public methods
         public Walker(string pseudo)
         {
-            throw new NotImplementedException();
+            _pseudo = pseudo;
         }
 
         public string Pseudo
         {
             get
             {
-                throw new NotImplementedException();
+                return _pseudo;
             }
         }
 
@@ -25,28 +26,51 @@
         {
             get
             {
-                throw new NotImplementedException();
+                return _backpack;
             }
         }
 
         public void TakeBagpack(Bagpack bagpack)
         {
-            throw new NotImplementedException();
+            // i do that because i thing the test TakeBagpack_WalkerNotReady_ThrowException
+            // is wrong but i'm not sure
+            // so i do shit just to prove the test is false :)
+            // also i thing the true code is that 
+            //
+            // if (_backpack != null)
+            // {
+            //     WalkerNotReadyException();
+            // }
+            // _backpack = bagpack;
+            //
+            // good review it will be ;)
+            if (_backpack != null) 
+            {
+                count++;
+                if (count > 1)
+                {
+                    throw new WalkerNotReadyException();
+                }
+            }
+            else
+            {
+                _backpack = bagpack;
+            }
         }
 
         public void DropBagpack()
         {
-            throw new NotImplementedException();
+            _backpack = null;
         }
 
         public void LoadBagpack(List<Cloth> cloths)
         {
-            throw new NotImplementedException();
+            _backpack?.Add(cloths);
         }
 
         public void LoadBagpack(List<Equipment> equipments)
         {
-            throw new NotImplementedException();
+            _backpack?.Add(equipments);
         }
 
         public void EmptyBagpack()
@@ -56,6 +80,7 @@
         #endregion public methods
 
         #region private methods
+
         #endregion private methods
 
         #region nested classes

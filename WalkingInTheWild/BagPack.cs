@@ -3,22 +3,22 @@
     public class Bagpack
     {
         //region private attributes
-        private List<Cloth> _clothes;
-        private List<Equipment> _equipments;
+        private List<Cloth> _clothes = new List<Cloth>();
+        private List<Equipment> _equipments = new List<Equipment>();
         private readonly float _maxLoad;    
         //endregion private attributes
 
         //region public methods
         public Bagpack(float maxLoad)
         {
-            throw new NotImplementedException();
+            _maxLoad = maxLoad;
         }
         
         public List<Cloth> Clothes
         {
             get
             {
-                throw new NotImplementedException();
+                return _clothes;
             }
         }
 
@@ -26,7 +26,7 @@
         {
             get
             {
-                throw new NotImplementedException();
+                return _equipments;
             }
         }
 
@@ -34,18 +34,41 @@
         {
             get
             {
-                throw new NotImplementedException();
+                return _maxLoad - _equipments.Sum(equipment => equipment.Weight);
+                //var maxload = _maxLoad;
+                //foreach (Equipment equipment in _equipments)
+                //{
+                //    maxload -= equipment.Weight;
+                //}
+                //return maxload;
             }
         }
 
         public void Add(Cloth cloth)
         {
-            throw new NotImplementedException();
+            _clothes.Add(cloth);
+        }
+
+        public void Add(List<Cloth> cloth)
+        {
+            _clothes.AddRange(cloth);
         }
 
         public void Add(Equipment equipment)
         {
-            throw new NotImplementedException();
+            if (equipment.Weight > RemainingLoadCapacity)
+            {
+                throw new MaximumLoadReachedException();
+            }
+            _equipments.Add(equipment);
+        }
+
+        public void Add(List<Equipment> equipments)
+        {
+            foreach (Equipment equipment in equipments)
+            {
+                Add(equipment);
+            }
         }
         //endregion public methods
 
