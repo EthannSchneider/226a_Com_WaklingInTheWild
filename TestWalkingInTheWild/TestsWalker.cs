@@ -203,14 +203,17 @@ namespace TestWalkingInTheWild
         }
 
         [Test]
-        public void EmptyBagpack_BagpackDoesntContainNeitherClothsOrEquipment_ThrowException()
+        public void EmptyBagpack_BagpackDoesntContainNeitherClothesOrEquipment_ThrowException()
         {
             //given
+            _walker.TakeBagpack(_bagpack);
 
             //when
+            Assert.IsEmpty(_walker.Bagpack.Clothes);
+            Assert.IsEmpty(_walker.Bagpack.Equipments);
 
             //then
-            Assert.True(false);
+            Assert.Throws<BagpackDoesntContainNeitherClothesOrEquipment>(() => _walker.EmptyBagpack());
         }
     }
 }

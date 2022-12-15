@@ -42,7 +42,7 @@
         {
             if (_bagpack == null)
             {
-                throw new EmptyBagpackException();
+                throw new WalkerDoesntCarryABagpackException();
             }
             _bagpack = null;
         }
@@ -67,6 +67,10 @@
 
         public void EmptyBagpack()
         {
+            if (_bagpack.Clothes.Count == 0 && _bagpack.Equipments.Count == 0)
+            {
+                throw new BagpackDoesntContainNeitherClothesOrEquipment();
+            }
             _bagpack.Clothes.Clear();
             _bagpack.Equipments.Clear();
         }
@@ -78,9 +82,10 @@
 
         #region nested classes
         public class WalkerException:Exception{}
-        public class WalkerAlreadyCarriesABagpackException : Exception { }
-        public class WalkerDoesntCarryABagpackException : Exception { }
+        public class WalkerAlreadyCarriesABagpackException : WalkerException { }
+        public class WalkerDoesntCarryABagpackException : WalkerException { }
         public class EmptyBagpackException : WalkerException { }
+        public class BagpackDoesntContainNeitherClothesOrEquipment : WalkerException { }
         #endregion nested classes
     }
 }
