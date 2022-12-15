@@ -91,129 +91,99 @@ namespace TestWalkingInTheWild
             //then
             Assert.Throws<WalkerDoesntCarryABagpackException>(() => _walker.DropBagpack());
         }
-                
+
         [Test]
         public void LoadBagpack_BagpackAvailableLoadSingleCloth_ClothIsLoadedInBagpack()
         {
             //given
-            List<Cloth> cloth = new List<Cloth>{ new Cloth("T-shirt") };
             _walker.TakeBagpack(_bagpack);
+            Assert.NotNull(_walker.Bagpack);
+            Assert.AreEqual(0, _walker.Bagpack.Clothes.Count);
+            Assert.AreEqual(_maxLoad, _walker.Bagpack.RemainingLoadCapacity);
 
             //when
-            Assert.IsEmpty(_walker.Bagpack.Clothes);
-            _walker.LoadBagpack(cloth);
+            _walker.LoadBagpack(Utils.GenerateClothes(1));
 
             //then
-            Assert.IsNotEmpty(_walker.Bagpack.Clothes);
-            _walker.DropBagpack();
+            Assert.AreEqual(1, _walker.Bagpack.Clothes.Count);
+            Assert.AreEqual(_maxLoad, _walker.Bagpack.RemainingLoadCapacity);
         }
 
         [Test]
         public void LoadBagpack_BagpackAvailableLoadMultipleCloths_ClothsAreLoadedInBagpack()
         {
             //given
-            List<Cloth> cloth = new List<Cloth> { new Cloth("T-shirt"), new Cloth("Pants", true), new Cloth("Shoes"), new Cloth("Hat") };
             _walker.TakeBagpack(_bagpack);
+            Assert.NotNull(_walker.Bagpack);
+            Assert.AreEqual(0, _walker.Bagpack.Clothes.Count);
+            Assert.AreEqual(_maxLoad, _walker.Bagpack.RemainingLoadCapacity);
 
             //when
-            Assert.IsEmpty(_walker.Bagpack.Clothes);
-            _walker.LoadBagpack(cloth);
+            _walker.LoadBagpack(Utils.GenerateClothes(10));
 
             //then
-            Assert.AreEqual(_walker.Bagpack.Clothes.Count, cloth.Count);
-            _walker.DropBagpack();
+            Assert.AreEqual(10, _walker.Bagpack.Clothes.Count);
+            Assert.AreEqual(_maxLoad, _walker.Bagpack.RemainingLoadCapacity);
         }
 
         [Test]
         public void LoadBagpack_ClothBagpackNotAvailable_ThrowException()
         {
             //given
-            List<Cloth> cloth = new List<Cloth> { new Cloth("T-shirt"), new Cloth("Pants", true), new Cloth("Shoes"), new Cloth("Hat") };
+            Assert.Null(_walker.Bagpack);
 
             //when
+            //Event is called by the assertion
 
             //then
-            Assert.Throws<EmptyBagpackException>(() => _walker.LoadBagpack(cloth));
+            Assert.Throws<WalkerDoesntCarryABagpackException>(() => _walker.LoadBagpack(Utils.GenerateClothes(1)));
         }
 
         [Test]
         public void LoadBagpack_BagpackAvailableLoadSingleEquipment_EquipmentIsLoadedInBagpack()
         {
             //given
-            List<Equipment> equipment = new List<Equipment> { new Equipment("Tent", 1.2f) };
             _walker.TakeBagpack(_bagpack);
+            Assert.NotNull(_walker.Bagpack);
+            Assert.AreEqual(0, _walker.Bagpack.Equipments.Count);
+            Assert.AreEqual(_maxLoad, _walker.Bagpack.RemainingLoadCapacity);
 
             //when
-            Assert.IsEmpty(_walker.Bagpack.Equipments);
-            _walker.LoadBagpack(equipment);
+            _walker.LoadBagpack(Utils.GenerateEquipment(1));
 
             //then
-            Assert.IsNotEmpty(_walker.Bagpack.Equipments);
-            _walker.DropBagpack();
+            Assert.AreEqual(1, _walker.Bagpack.Equipments.Count);
+            Assert.AreEqual(_maxLoad-1, _walker.Bagpack.RemainingLoadCapacity);
         }
 
         [Test]
         public void LoadBagpack_BagpackAvailableLoadMultipleEquipments_EquipmentAreLoadedInBagpack()
         {
             //given
-            List<Equipment> equipment = new List<Equipment> { new Equipment("Tent", 1.2f), new Equipment("Sleeping bag", 1.5f), new Equipment("Stove", 0.5f), new Equipment("Cooking set", 0.3f) };
             _walker.TakeBagpack(_bagpack);
+            Assert.NotNull(_walker.Bagpack);
+            Assert.AreEqual(0, _walker.Bagpack.Equipments.Count);
+            Assert.AreEqual(_maxLoad, _walker.Bagpack.RemainingLoadCapacity);
 
             //when
-            Assert.IsEmpty(_walker.Bagpack.Equipments);
-            _walker.LoadBagpack(equipment);
+            _walker.LoadBagpack(Utils.GenerateEquipment(10));
 
             //then
-            Assert.IsNotEmpty(_walker.Bagpack.Equipments);
-            _walker.DropBagpack();
+            Assert.AreEqual(1, _walker.Bagpack.Equipments.Count);
+            Assert.AreEqual(_maxLoad - 55, _walker.Bagpack.RemainingLoadCapacity);
         }
 
         [Test]
         public void LoadBagpack_EquipmentBagpackNotAvailable_ThrowException()
         {
             //given
-            List<Equipment> equipment = new List<Equipment> { new Equipment("Tent", 1.2f), new Equipment("Sleeping bag", 1.5f), new Equipment("Stove", 0.5f), new Equipment("Cooking set", 0.3f) };
+            Assert.Null(_walker.Bagpack);
 
             //when
+            //Event is called by the assertion
 
             //then
-            Assert.Throws<EmptyBagpackException>(() => _walker.LoadBagpack(equipment));
-        }
-
-        [Test]
-        public void EmptyBagpack_BagpackContainsClothsAndEquipment_BackpackIsEmpty()
-        {
-            //given
-            _walker.TakeBagpack(_bagpack);
-            List<Equipment> equipment = new List<Equipment> { new Equipment("Tent", 1.2f), new Equipment("Sleeping bag", 1.5f), new Equipment("Stove", 0.5f), new Equipment("Cooking set", 0.3f) };
-            List<Cloth> cloth = new List<Cloth> { new Cloth("T-shirt"), new Cloth("Pants", true), new Cloth("Shoes"), new Cloth("Hat") };
-            Assert.IsEmpty(_walker.Bagpack.Clothes);
-            Assert.IsEmpty(_walker.Bagpack.Equipments);
-
-            //when
-            _walker.LoadBagpack(equipment);
-            _walker.LoadBagpack(cloth);
-            Assert.IsNotEmpty(_walker.Bagpack.Clothes);
-            Assert.IsNotEmpty(_walker.Bagpack.Equipments);
-            _walker.EmptyBagpack();
-
-            //then
-            Assert.IsEmpty(_walker.Bagpack.Clothes);
-            Assert.IsEmpty(_walker.Bagpack.Equipments);
-        }
-
-        [Test]
-        public void EmptyBagpack_BagpackDoesntContainNeitherClothesOrEquipment_ThrowException()
-        {
-            //given
-            _walker.TakeBagpack(_bagpack);
-
-            //when
-            Assert.IsEmpty(_walker.Bagpack.Clothes);
-            Assert.IsEmpty(_walker.Bagpack.Equipments);
-
-            //then
-            Assert.Throws<BagpackDoesntContainNeitherClothesOrEquipment>(() => _walker.EmptyBagpack());
+            Assert.Throws<WalkerDoesntCarryABagpackException>(() => _walker.LoadBagpack(Utils.GenerateEquipment(1)));
         }
     }
 }
