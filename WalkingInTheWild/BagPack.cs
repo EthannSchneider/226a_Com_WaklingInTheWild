@@ -36,7 +36,7 @@ namespace WalkingInTheWild
         {
             get
             {
-                return _maxLoad;
+                return _maxLoad - CurrentLoad;
             }
         }
 
@@ -45,16 +45,32 @@ namespace WalkingInTheWild
             _clothes.Add(cloth);
         }
 
+        public void Add(List<Cloth> cloth)
+        {
+            _clothes.AddRange(cloth);
+        }
+
         public void Add(Equipment equipment)
         {
+            if (equipment.Weight > RemainingLoadCapacity)
+            {
+                throw new MaximumLoadReachedException();
+            }
             _equipments.Add(equipment);
+        }
+
+        public void Add(List<Equipment> equipments)
+        {
+            foreach (Equipment equipment in equipments)
+            {
+                Add(equipment);
+            }
         }
         //endregion public methods
 
         //region private methods
         private float CurrentLoad
         {
-            //TODO Discussion - getter or method ? (computed property)
             get
             {
                 {

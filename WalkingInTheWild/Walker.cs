@@ -31,11 +31,19 @@
 
         public void TakeBagpack(Bagpack bagpack)
         {
+            if (_bagpack != null)
+            {
+                throw new WalkerAlreadyCarriesABagpackException();
+            }
             _bagpack = bagpack;
         }
 
         public void DropBagpack()
         {
+            if (_bagpack == null)
+            {
+                throw new WalkerDoesntCarryABagpackException();
+            }
             _bagpack = null;
         }
 
@@ -57,18 +65,25 @@
 
         public void EmptyBagpack()
         {
-            throw new NotImplementedException();
+            if (_bagpack.Clothes.Count == 0 && _bagpack.Equipments.Count == 0)
+            {
+                throw new BagpackDoesntContainNeitherClothesOrEquipment();
+            }
+            _bagpack.Clothes.Clear();
+            _bagpack.Equipments.Clear();
         }
         #endregion public methods
 
         #region private methods
+
         #endregion private methods
 
         #region nested classes
         public class WalkerException:Exception{}
-        public class WalkerAlreadyCarriesABagpackException : Exception { }
-        public class WalkerDoesntCarryABagpackException : Exception { }
+        public class WalkerAlreadyCarriesABagpackException : WalkerException { }
+        public class WalkerDoesntCarryABagpackException : WalkerException { }
         public class EmptyBagpackException : WalkerException { }
+        public class BagpackDoesntContainNeitherClothesOrEquipment : WalkerException { }
         #endregion nested classes
     }
 }

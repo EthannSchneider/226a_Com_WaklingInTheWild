@@ -1,3 +1,4 @@
+using NuGet.Frameworks;
 using WalkingInTheWild;
 using static WalkingInTheWild.Bagpack;
 using static WalkingInTheWild.Cloth;
