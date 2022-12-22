@@ -49,18 +49,20 @@
 
         public void LoadBagpack(List<Cloth> cloths)
         {
-            foreach (Cloth cloth in cloths)
+            if (_bagpack == null)
             {
-                _bagpack?.Add(cloth);
+                throw new WalkerDoesntCarryABagpackException();
             }
+            _bagpack?.Add(cloths);
         }
 
         public void LoadBagpack(List<Equipment> equipments)
         {
-            foreach (Equipment equipment in equipments)
+            if (_bagpack == null)
             {
-                _bagpack?.Add(equipment);
+                throw new WalkerDoesntCarryABagpackException();
             }
+            _bagpack?.Add(equipments);
         }
 
         public void EmptyBagpack()
